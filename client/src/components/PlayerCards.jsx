@@ -9,7 +9,7 @@ const PlayerCards = ( {hands, actionButtons, gameConditionals, deck} ) => {
       <div id="hands">
         {handKeys.map((handKey, i) => <Hand
           key={`hand${i}`}
-          id={`hand${i}`}
+          id={`hand${i + 1}`}
           deck={deck}
           hand={hands[handKey]}
           actionButtons={actionButtons}

@@ -1,5 +1,7 @@
 import React from 'react';
 import Table from './components/Table.jsx'
+import utils from './utils.js'
+
 class App extends React.Component {
   constructor (props) {
     super(props)
@@ -23,17 +25,21 @@ class App extends React.Component {
         hands: {
           hand1: {
             id: 'hand1',
-            cardsStrings: [],
+            cardsData: [],
             aceCount: 0,
-            total: 0
+            totalWithoutAces: 0,
+            softTotal: 0, //regardless if there are aces, softTotal is default
+            hardTotal: 0
           }
         }
       },
       dealerHand: {
         id: 'dealerHand',
-        cardsStrings: [],
+        cardsData: [],
         aceCount: 0,
-        total: 0
+        totalWithoutAces: 0,
+        softTotal: 0,
+        hardTotal: 0
       },
       playerName: '',
       chips: 1000,
@@ -65,8 +71,8 @@ class App extends React.Component {
     let hand1 = player1.hands.hand1
     let dealerHand = this.state.dealerHand;
     for (let i = 0; i < 2; i++) {
-      this.hit(deck, hand1);
-      this.hit(deck, dealerHand);
+      hand1 = this.hit(deck, hand1);
+      dealerHand = this.hit(deck, dealerHand);
     }
     this.setState({
       deck: deck,
@@ -80,8 +86,15 @@ class App extends React.Component {
   }
 
   hit(deck, hand) {
-    console.log(hand)
-    hand.cardsStrings.push(deck.pop());
+    let newCard = utils.translateCardStringToData(deck.pop())
+    hand.cardsData.push(newCard);
+    hand.totalWithoutAces = utils.calcHandTotalWithoutAces(hand.totalWithoutAces, newCard.value)
+    hand.aceCount = utils.updateAceCount(hand.aceCount, newCard.value)
+    let [softTotal, hardTotal] = utils.calcSoftAndHardTotals(hand.totalWithoutAces, hand.aceCount)
+    hand.softTotal = softTotal
+    hand.hardTotal = hardTotal
+
+    //logic for post start game
     if (this.state.gameConditionals.isGameAlive) {
       if (hand.id === 'dealerHand') {
         //deal the dealer
@@ -92,8 +105,9 @@ class App extends React.Component {
           player1: player1
         })
       }
+      return;
     }
-    return deck;
+    return hand;
   }
 
   stay() {
@@ -116,6 +130,7 @@ class App extends React.Component {
   }
 
   render () {
+    console.log(this.state.player1)
     let gameConditionals = this.state.gameConditionals
     return (
       <>

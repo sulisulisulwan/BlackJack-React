@@ -6,7 +6,7 @@ class Hand extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      cardsData: [],
+      handData: [],
       isBust: false
     }
     this.actionHandler = this.actionHandler.bind(this);
@@ -21,16 +21,18 @@ class Hand extends React.Component {
   }
 
   componentDidUpdate() {
-    let cardsData = this.state.cardsData;
-    let {cardsStrings, aceCount, total} = this.props.hand;
-    if (cardsStrings.length !== cardsData.length) {
+
+    let handData = this.state.handData;
+    let {cardsData, aceCount, total} = this.props.hand;
+    if (cardsData.length !== cardsData.length) {
       if (cardsData.length === 0) {
-        cardsStrings.forEach(card => {
-          cardsData.push(utils.translateCardStringToData(card))
+        cardsData.forEach(card => {
+          handData.push(card)
         })
       } else {
-        cardsData.push(utils.translateCardStringToData(cardsStrings[cardsStrings.length - 1]))
+        handData.push(cardsData[cardsData.length - 1])
       }
+      utils.checkIfBust()
       this.setState({
         cardsData: cardsData
       })
@@ -40,7 +42,7 @@ class Hand extends React.Component {
   }
 
   render () {
-    console.log(this.props)
+    let cardsData = this.props.hand.cardsData
     let handId = this.props.id
     let gameConditionals = this.props.gameConditionals
     gameConditionals.isBust = this.state.isBust;
@@ -48,7 +50,7 @@ class Hand extends React.Component {
     return (
       <>
         <div id={`hand-${handId + 1}-cards`}>
-          {this.state.cardsData.map((card, i) => <Card key={Math.random()} card={card}/>)}
+          {cardsData.map((card, i) => <Card key={Math.random()} card={card}/>)}
         </div>
         <div id="player-action">
           {!utils.isHitPossible(gameConditionals) ? null : <ActionButton key={'hit'} action={[`hit-hand${handId + 1}`, this.actionHandler, 'HIT']}/>}

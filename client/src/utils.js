@@ -16,20 +16,32 @@ const checkIfBust = (totalWithoutAce, aceCount) => {
   return (totalWithoutAce > 21 || totalWithoutAce + aceCount > 21) ? true : false;
 }
 
-const calculatePossibleSoftAndHardTotals = (totalWithoutAce, aceCount) => {
-  let hardTotal, softTotal;
-  if (11 + aceCount - 1 + totalWithoutAce <= 21) {
-    hardTotal = totalWithoutAce + 11 + (aceCount - 1)
+const calcHandTotalWithoutAces = (totalWithoutAce, newCardValue) => {
+  if (newCardValue === 'J' || newCardValue === 'Q' || newCardValue === 'K') {
+    return totalWithoutAce + 10
+  } else if (newCardValue === 'A') {
+    return totalWithoutAce
+  } else {
+    return totalWithoutAce + Number(newCardValue);
   }
-  softTotal = totalWithoutAce + aceCount
-  return `Total is ${softTotal}${hardTotal ? ' or ' + hardTotal : ''}`
 }
 
-const calculateHandTotalWithoutAces = (currentSum, newCardValue) => {
-  return (newCardValue === 'J' || newCardValue === 'Q' || newCardValue === 'K') ? currentSum + 10
-      : newCardValue = 'A' ? currentSum
-      : currentSum + Number(newCardValue);
+const calcSoftAndHardTotals = (totalWithoutAces, aceCount) => {
+  if (aceCount === 0) {
+    return [totalWithoutAces, totalWithoutAces]
+  }
+  let hardTotal, softTotal;
+  if (11 + aceCount - 1 + totalWithoutAces <= 21) {
+    hardTotal = totalWithoutAces + 11 + (aceCount - 1)
+  }
+  softTotal = totalWithoutAces + aceCount
+  return [softTotal, hardTotal]
 }
+
+const updateAceCount = (currentAceCount, newCardValue) => {
+  return newCardValue === 'A' ? currentAceCount + 1 : currentAceCount;
+}
+
 
 const isHitPossible = (conditionals) => {
   let { isDealersTurn, isBust, isGameAlive } = conditionals;
@@ -51,8 +63,9 @@ const isDoubleDownPossible = (conditionals) => {
 module.exports = {
   translateCardStringToData,
   checkIfBust,
-  calculatePossibleSoftAndHardTotals,
-  calculateHandTotalWithoutAces,
+  calcSoftAndHardTotals,
+  calcHandTotalWithoutAces,
+  updateAceCount,
   isHitPossible,
   isStayPossible,
   isSplitPossible,
