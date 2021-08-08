@@ -1,14 +1,19 @@
 import React from 'react';
 import utils from '../utils.js'
+import Hand from './Hand.jsx'
 
-const PlayerCards = ( {hands} ) => {
-  let {hand1, hand2, hand3, hand4} = hands
-  console.log(hand1)
-
-
+const PlayerCards = ( {hands, actionButtons, gameIsAlive} ) => {
   return (
-    <div>
-      {JSON.stringify(hand1) || ''} {hand2 || ''} {hand3 || ''} {hand4 || ''}
+    <div id="player-area">
+      <div id="hands">
+        {hands.map((hand, i) => <Hand
+          key={`hand${i}`}
+          id={`hand${i}`}
+          hand={hand}
+          actionButtons={actionButtons}
+          gameIsAlive={gameIsAlive}
+          />)}
+      </div>
     </div>
   )
 }

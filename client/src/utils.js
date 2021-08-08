@@ -5,10 +5,9 @@ const translateCardStringToData = (cardString) => {
     D: 'diamonds',
     H: 'hearts'
   }
-  let [cardSuit, cardValue] = cardString.split('.')
+  let [cardValue, cardSuit] = cardString.split('.')
   return cardData = {
-    suit: suits[cardSuit],
-    displayString: `${cardValue}`,
+    displayString: `${cardValue} of ${suits[cardSuit]}`,
     value: cardValue
   }
 }
@@ -32,19 +31,31 @@ const calculateHandTotalWithoutAces = (currentSum, newCardValue) => {
       : currentSum + Number(newCardValue);
 }
 
+const hitIsPossible = (conditionals) => {
 
-
-const calculateTotalCardsValue = (playerCards) => {
-
-  let [sum, aceQuarantine] = totalWithoutAcesAndQuarantineAces(playerCards);
-
-  if (aceQuarantine.length) {
-    //if total sum is
-  }
+  //if it is the dealer's turn
+  //if is bust is false
+  //if gameIsAlive
 }
 
-const totalWithSoftAces = (cards) => {
-  return cards.reduce((total, currentCard) => {
+const stayIsPossible = (conditionals) => {
 
-  }, 0)
+}
+
+const splitIsPossible = (conditionals) => {
+
+}
+
+const doubleDownIsPossible = (conditionals) =>
+
+
+module.exports = {
+  translateCardStringToData,
+  checkIfBust,
+  calculatePossibleSoftAndHardTotals,
+  calculateHandTotalWithoutAces,
+  hitIsPossible,
+  stayIsPossible,
+  splitIsPossible,
+  doubleDownIsPossible
 }

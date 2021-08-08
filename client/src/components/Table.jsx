@@ -4,13 +4,14 @@ import PlayerCards from './PlayerCards.jsx'
 import Chips from './Chips.jsx'
 import Deck from './Deck.jsx'
 
-const Table = ( {player1} ) => {
+const Table = ( {player1, actionButtons, gameIsAlive} ) => {
+  let hands = player1.hands
   return (
     <div id="table">
       <DealerCards/>
       <Deck/>
       <Chips/>
-      <PlayerCards hands={player1}/>
+      <PlayerCards hands={hands} actionButtons={actionButtons} gameIsAlive={gameIsAlive}/>
     </div>
   )
 }

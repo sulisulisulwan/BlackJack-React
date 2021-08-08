@@ -4,6 +4,8 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      gameIsAlive: false,
+      dealerTurn: false,
       deck: [
         'A.S', 'A.C', 'A.D', 'A.H',
         '2.S', '2.C', '2.D', '2.H',
@@ -20,11 +22,13 @@ class App extends React.Component {
         'K.S', 'K.C', 'K.D', 'K.H'
       ],
       player1: {
-        hand1: {
-          cards: [],
-          aceCount: 0,
-          total: 0
-        }
+        hands: [
+          {
+            cardsStrings: [],
+            aceCount: 0,
+            total: 0
+          }
+        ]
       },
       dealerHand: [],
       playerName: '',
@@ -33,6 +37,9 @@ class App extends React.Component {
     this.shuffleDeck = this.shuffleDeck.bind(this);
     this.handleStartGame = this.handleStartGame.bind(this);
     this.hit = this.hit.bind(this);
+    this.stay = this.stay.bind(this);
+    this.doubleDown = this.doubleDown.bind(this);
+    this.split = this.split.bind(this);
   }
 
   shuffleDeck (deck) {
@@ -49,29 +56,58 @@ class App extends React.Component {
     let player1 = this.state.player1;
     let dealerHand = this.state.dealerHand;
     for (let i = 0; i < 2; i++) {
-      this.hit(deck, player1.hand1);
+      this.hit(deck, player1.hands[0].cardsStrings);
       this.hit(deck, dealerHand);
     }
     this.setState({
       deck: deck,
       player1: player1,
-      dealerHand: dealerHand
+      dealerHand: dealerHand,
+      gameIsAlive: true,
+      dealerTurn: false
     })
   }
 
   hit(deck, hand) {
     hand.push(deck.pop());
+    return deck;
+  }
+
+  stay() {
+    this.setState({
+      dealerTurn: true
+    })
+  }
+
+  split() {
+
+  }
+
+  doubleDown() {
+
   }
 
   componentDidMount() {
   }
 
   render () {
+    let gameIsAlive = this.state.gameIsAlive
     return (
-      <div>
-        <Table player1={this.state.player1}/>
-        <button id="start-game" onClick={this.handleStartGame}>Start Game</button>
-      </div>
+      <>
+        <Table
+          player1={this.state.player1}
+          actionButtons={
+            {
+              hit: this.hit,
+              stay: this.stay,
+              doubleDown: this.doubleDown,
+              split: this.split
+            }
+          }
+          gameIsAlive={gameIsAlive}
+        />
+        {gameIsAlive ? null : <button id="deal-cards" onClick={this.handleStartGame}>Deal Cards</button>}
+      </>
     )
   }
 }

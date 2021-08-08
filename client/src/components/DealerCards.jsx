@@ -2,7 +2,7 @@ import React from 'react';
 
 const PlayerCards = () => {
   return (
-    <div>
+    <div id="dealer-cards">
       Dealer Cards
     </div>
   )
