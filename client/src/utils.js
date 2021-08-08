@@ -31,31 +31,30 @@ const calculateHandTotalWithoutAces = (currentSum, newCardValue) => {
       : currentSum + Number(newCardValue);
 }
 
-const hitIsPossible = (conditionals) => {
-
-  //if it is the dealer's turn
-  //if is bust is false
-  //if gameIsAlive
+const isHitPossible = (conditionals) => {
+  let { isDealersTurn, isBust, isGameAlive } = conditionals;
+  return !isDealersTurn && !isBust && isGameAlive ? true : false;
 }
 
-const stayIsPossible = (conditionals) => {
-
-}
-
-const splitIsPossible = (conditionals) => {
+const isStayPossible = (conditionals) => {
 
 }
 
-const doubleDownIsPossible = (conditionals) =>
+const isSplitPossible = (conditionals) => {
 
+}
+
+const isDoubleDownPossible = (conditionals) => {
+
+}
 
 module.exports = {
   translateCardStringToData,
   checkIfBust,
   calculatePossibleSoftAndHardTotals,
   calculateHandTotalWithoutAces,
-  hitIsPossible,
-  stayIsPossible,
-  splitIsPossible,
-  doubleDownIsPossible
+  isHitPossible,
+  isStayPossible,
+  isSplitPossible,
+  isDoubleDownPossible
 }

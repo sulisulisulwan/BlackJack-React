@@ -4,8 +4,6 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      gameIsAlive: false,
-      dealerTurn: false,
       deck: [
         'A.S', 'A.C', 'A.D', 'A.H',
         '2.S', '2.C', '2.D', '2.H',
@@ -22,17 +20,27 @@ class App extends React.Component {
         'K.S', 'K.C', 'K.D', 'K.H'
       ],
       player1: {
-        hands: [
-          {
+        hands: {
+          hand1: {
+            id: 'hand1',
             cardsStrings: [],
             aceCount: 0,
             total: 0
           }
-        ]
+        }
       },
-      dealerHand: [],
+      dealerHand: {
+        id: 'dealerHand',
+        cardsStrings: [],
+        aceCount: 0,
+        total: 0
+      },
       playerName: '',
-      chips: 1000
+      chips: 1000,
+      gameConditionals: {
+        isGameAlive: false,
+        isDealerTurn: false
+      }
     }
     this.shuffleDeck = this.shuffleDeck.bind(this);
     this.handleStartGame = this.handleStartGame.bind(this);
@@ -54,28 +62,45 @@ class App extends React.Component {
   handleStartGame () {
     let deck = this.shuffleDeck(this.state.deck);
     let player1 = this.state.player1;
+    let hand1 = player1.hands.hand1
     let dealerHand = this.state.dealerHand;
     for (let i = 0; i < 2; i++) {
-      this.hit(deck, player1.hands[0].cardsStrings);
+      this.hit(deck, hand1);
       this.hit(deck, dealerHand);
     }
     this.setState({
       deck: deck,
       player1: player1,
       dealerHand: dealerHand,
-      gameIsAlive: true,
-      dealerTurn: false
+      gameConditionals: {
+        isGameAlive: true,
+        isDealerTurn: false
+      }
     })
   }
 
   hit(deck, hand) {
-    hand.push(deck.pop());
+    console.log(hand)
+    hand.cardsStrings.push(deck.pop());
+    if (this.state.gameConditionals.isGameAlive) {
+      if (hand.id === 'dealerHand') {
+        //deal the dealer
+      } else {
+        let player1 = this.state.player1
+        player1.hands[hand.id] = hand;
+        this.setState({
+          player1: player1
+        })
+      }
+    }
     return deck;
   }
 
   stay() {
     this.setState({
-      dealerTurn: true
+      gameConditionals: {
+        isDealersTurn: true
+      }
     })
   }
 
@@ -91,11 +116,12 @@ class App extends React.Component {
   }
 
   render () {
-    let gameIsAlive = this.state.gameIsAlive
+    let gameConditionals = this.state.gameConditionals
     return (
       <>
         <Table
           player1={this.state.player1}
+          deck={this.state.deck}
           actionButtons={
             {
               hit: this.hit,
@@ -104,9 +130,9 @@ class App extends React.Component {
               split: this.split
             }
           }
-          gameIsAlive={gameIsAlive}
+          gameConditionals={gameConditionals}
         />
-        {gameIsAlive ? null : <button id="deal-cards" onClick={this.handleStartGame}>Deal Cards</button>}
+        {gameConditionals.isGameAlive ? null : <button id="deal-cards" onClick={this.handleStartGame}>Deal Cards</button>}
       </>
     )
   }

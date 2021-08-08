@@ -9,6 +9,15 @@ class Hand extends React.Component {
       cardsData: [],
       isBust: false
     }
+    this.actionHandler = this.actionHandler.bind(this);
+  }
+
+  actionHandler(e) {
+    let [action, handId] = e.target.id.split('-')
+    action === 'hit' ? this.props.actionButtons.hit(this.props.deck, this.props.hand)
+      : action === 'stay' ? this.props.actionButtons.stay(this.props.hand)
+      : action === 'doubleDown' ? this.props.actionButtons.doubleDown(this.props.deck, this.props.hand)
+      : this.props.actionButtons.split(this.props.deck, this.props.hand, this.props.handId)
   }
 
   componentDidUpdate() {
@@ -31,20 +40,21 @@ class Hand extends React.Component {
   }
 
   render () {
-    let isBust = this.state.isBust
-    let gameIsAlive = this.props.gameIsAlive
-    let id = this.props.id
-    const { hit, stay, doubleDown, split } = this.props.actionButtons
+    console.log(this.props)
+    let handId = this.props.id
+    let gameConditionals = this.props.gameConditionals
+    gameConditionals.isBust = this.state.isBust;
+
     return (
       <>
-        <div id={`hand-${id + 1}-cards`}>
+        <div id={`hand-${handId + 1}-cards`}>
           {this.state.cardsData.map((card, i) => <Card key={Math.random()} card={card}/>)}
         </div>
         <div id="player-action">
-          {!gameIsAlive || isBust ? null : <ActionButton key={'hit'} action={['HIT', hit]}/>}
-          {!gameIsAlive || isBust ? null : <ActionButton key={'stay'} action={['STAY', stay]}/>}
-          {!gameIsAlive || isBust ? null : <ActionButton key={'double-down'} action={['DOUBLE DOWN', doubleDown]}/>}
-          {!gameIsAlive || isBust ? null : <ActionButton key={'split'} action={['SPLIT', split]}/>}
+          {!utils.isHitPossible(gameConditionals) ? null : <ActionButton key={'hit'} action={[`hit-hand${handId + 1}`, this.actionHandler, 'HIT']}/>}
+          {!gameConditionals.isGameAlive ? null : <ActionButton key={'stay'} action={[`stay-hand${handId + 1}`, this.actionHandler, 'STAY']}/>}
+          {!gameConditionals.isGameAlive ? null : <ActionButton key={'double-down'} action={[`doubledown-hand${handId + 1}`, this.actionHandler, 'DOUBLE DOWN']}/>}
+          {!gameConditionals.isGameAlive ? null : <ActionButton key={'split'} action={[`split-hand${handId + 1}`, this.actionHandler, 'SPLIT']}/>}
         </div>
       </>
     )
